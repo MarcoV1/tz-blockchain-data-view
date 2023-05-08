@@ -6,7 +6,7 @@ import {NgModule} from "@angular/core";
 const routes: Routes = [
   { path: '', redirectTo: 'list', pathMatch: 'full' },
   {path : 'list', component : TzBlockListComponent},
-  {path : 'detail', component : TzBlockDetailComponent}
+  {path : 'details/:level', component : TzBlockDetailComponent}
 ];
 
 @NgModule({
