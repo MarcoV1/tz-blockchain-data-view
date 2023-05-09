@@ -3,8 +3,6 @@ import {ActivatedRoute} from "@angular/router";
 import {map, Observable, switchMap, takeWhile} from "rxjs";
 import {TzDataHandlerService} from "../../../services/tz-datahandler.service";
 import {TzTransaction} from "../../../types/tz-transaction.interface";
-import {getListOfBlocks} from "../../../rx-shared/tz.actions";
-import {TzBlock} from "../../../types/tz-block.interface";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 

@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, filter, forkJoin, map, mergeMap, Observable} from "rxjs";
+import {
+  BehaviorSubject,
+  debounceTime,
+  filter,
+  forkJoin,
+  map,
+  Observable,
+  switchMap
+} from "rxjs";
 import {TzBlock} from "../types/tz-block.interface";
 import {Store} from "@ngrx/store";
 import {selectBlockList} from "../rx-shared/tz.selectors";
@@ -11,17 +19,18 @@ import {combineLatest} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class TzDataHandlerService {
+export class  TzDataHandlerService {
   blockList$ = this.store.select(selectBlockList);
   currentPageIndexAndSize$ = new BehaviorSubject([0, 5]);
 
   transactionsCount$ = combineLatest([this.blockList$, this.currentPageIndexAndSize$])
     .pipe(
-    filter( ([blockList, pageIndexAndSize]) => blockList?.length > 0),
-    map(([blockList, pageIndexAndSize]: ([TzBlock[], number[]])) => {
+      debounceTime(100),
+      filter( ([blockList, pageIndexAndSize]) => blockList?.length > 0),
+      map(([blockList, pageIndexAndSize]: ([TzBlock[], number[]])) => {
       return blockList.map(block => block.level).splice(pageIndexAndSize[0] * pageIndexAndSize[1], pageIndexAndSize[1])
     }),
-    mergeMap((numbers: number[]) => {
+    switchMap((numbers: number[]) => {
      return forkJoin(numbers.map(number => this.getTzTransactionsCount(number)))
     })
   )

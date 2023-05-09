@@ -17,19 +17,16 @@ export class TzBlockListComponent implements OnInit, OnDestroy {
   inView = true
   displayedColumns: string[] = ['level', 'proposer', 'timestamp', 'numberTransactions'];
   dataSource: MatTableDataSource<TzBlock>;
+
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(public tzDataHandlerService: TzDataHandlerService,
               private store: Store,
-              private router: Router) {
-
-
-    tzDataHandlerService.blockList$.pipe()
-      .subscribe(res => console.log("res", res))
-  }
+              private router: Router) {}
 
   ngOnInit() {
     this.store.dispatch(getListOfBlocks());
+    this.tzDataHandlerService.currentPageIndexAndSize$.next([0, 5]);
     this.loadBlocksDataToTable();
   }
 
@@ -44,7 +41,6 @@ export class TzBlockListComponent implements OnInit, OnDestroy {
       .subscribe(([blockList, transactionCount]) => {
         const pageIndexAndSize = this.tzDataHandlerService.currentPageIndexAndSize$.value;
         const updatedBlockList = blockList.map((block, index) => {
-
           if (index >= pageIndexAndSize[0] * pageIndexAndSize[1]
             && index < (pageIndexAndSize[0] * pageIndexAndSize[1] + pageIndexAndSize[1])) {
             return {
@@ -52,7 +48,6 @@ export class TzBlockListComponent implements OnInit, OnDestroy {
               transactionCount: transactionCount.splice(0,1)
             }
           } else return block;
-
         }) as TzBlock[];
 
         this.dataSource = new MatTableDataSource(updatedBlockList);

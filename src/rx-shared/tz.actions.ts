@@ -9,13 +9,7 @@ export const getListOfBlocksSuccess = createAction(
   props<{ blockList: TzBlock[] }>()
 );
 
-// ✨ New 👇
 export const getListOfBlocksFailed = createAction(
   "[Block List] Get Blocks Failed",
   props<{ error: any }>()
-);
-
-export const getBlockDetail = createAction(
-  '[Block Detail] Get Block Details',
-  props<{ block: TzBlock }>()
 );
